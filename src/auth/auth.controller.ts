@@ -5,12 +5,13 @@ import {
   HttpCode,
   HttpStatus,
   Get,
-  Res,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LoginDto } from '../dto/login.dto';
-import { RegisterDto } from 'src/dto/register.dto';
-import type { Response } from 'express';
+import { LoginDto } from './dto/login.dto';
+import { RegisterDto } from 'src/auth/dto/register.dto';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -18,19 +19,8 @@ export class AuthController {
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
-  async login(
-    @Body() loginDto: LoginDto,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    const result = await this.authService.login(loginDto);
-
-    res.cookie('Authorization', 'Bearer ' + result.accessToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      maxAge: 60 * 60 * 1000,
-    });
-
-    return result;
+  async login(@Body() loginDto: LoginDto) {
+    return await this.authService.login(loginDto);
   }
 
   @Post('register')
@@ -41,16 +31,10 @@ export class AuthController {
 
   @Get('logout')
   @HttpCode(HttpStatus.OK)
-  async logout(@Res({ passthrough: true }) res: Response) {
-    const userId = 1;
-    const result = await this.authService.logout(userId);
-
-    res.clearCookie('Authorization', {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-    });
-
+  @UseGuards(JwtAuthGuard)
+  async logout(@Req() request: Request) {
+    const accoundId = request['user'].sub;
+    const result = await this.authService.logout(accoundId);
     return result;
   }
 }

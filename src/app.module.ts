@@ -7,7 +7,7 @@ import configuration from './config/configuration';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { databaseConfig } from './config/database.config';
 import { CacheModule } from '@nestjs/cache-manager';
-import { redisStore } from 'cache-manager-redis-store';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -17,6 +17,7 @@ import { redisStore } from 'cache-manager-redis-store';
     CacheModule.register({
       isGlobal: true,
     }),
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
