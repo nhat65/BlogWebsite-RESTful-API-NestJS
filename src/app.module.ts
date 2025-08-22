@@ -7,7 +7,8 @@ import configuration from './config/configuration';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { databaseConfig } from './config/database.config';
 import { CacheModule } from '@nestjs/cache-manager';
-import { UsersModule } from './users/users.module';
+import { UserModule } from './users/user.module';
+import { PostModule } from './posts/post.module';
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { UsersModule } from './users/users.module';
     CacheModule.register({
       isGlobal: true,
     }),
-    UsersModule,
+    UserModule,
+    PostModule,
   ],
   controllers: [AppController],
   providers: [AppService],
