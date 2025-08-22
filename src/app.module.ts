@@ -9,6 +9,7 @@ import { databaseConfig } from './config/database.config';
 import { CacheModule } from '@nestjs/cache-manager';
 import { UserModule } from './users/user.module';
 import { PostModule } from './posts/post.module';
+import { PaypalModule } from './paypal/paypal.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { PostModule } from './posts/post.module';
     }),
     UserModule,
     PostModule,
+    PaypalModule,
   ],
   controllers: [AppController],
   providers: [AppService],
