@@ -10,7 +10,7 @@ import {
   UploadedFile,
   Put,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
+import { UserService } from './user.service';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { Roles } from 'src/common/decorator/roles.decorator';
 import { Role } from 'src/constant/enum';
@@ -22,8 +22,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard)
-export class UsersController {
-  constructor(private readonly userService: UsersService) {}
+export class UserController {
+  constructor(private readonly userService: UserService) {}
 
   @Get('/')
   @Roles(Role.ADMIN)
@@ -46,8 +46,7 @@ export class UsersController {
     @Req() request: Request,
   ) {
     const accoundId = request['user'].sub;
-    updateUserDto.avatarUrl = file ? `/uploads/${file.filename}` : '';
-    return this.userService.updateProfile(accoundId, updateUserDto);
+    return this.userService.updateProfile(accoundId, updateUserDto, file);
   }
 
   @Post('create')
@@ -58,7 +57,6 @@ export class UsersController {
     @Req() request: Request,
   ) {
     const accoundId = request['user'].sub;
-    createUserDto.avatarUrl = file ? `/uploads/${file.filename}` : '';
-    return this.userService.createUser(accoundId, createUserDto);
+    return this.userService.createUser(accoundId, createUserDto, file);
   }
 }

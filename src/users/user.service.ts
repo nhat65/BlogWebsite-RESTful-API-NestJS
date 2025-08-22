@@ -1,7 +1,6 @@
 import { CACHE_MANAGER, Cache } from '@nestjs/cache-manager';
 import {
   BadRequestException,
-  ConflictException,
   Inject,
   Injectable,
   Logger,
@@ -15,8 +14,8 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { Account } from 'src/entities/account.entity';
 
 @Injectable()
-export class UsersService {
-  private readonly logger = new Logger(UsersService.name);
+export class UserService {
+  private readonly logger = new Logger(UserService.name);
 
   constructor(
     @InjectRepository(User)
@@ -106,8 +105,13 @@ export class UsersService {
     }
   }
 
-  async updateProfile(userId: number, updateData: UpdateUserDto) {
+  async updateProfile(
+    userId: number,
+    updateData: UpdateUserDto,
+    file: Express.Multer.File,
+  ) {
     try {
+      updateData.avatarUrl = file ? `/uploads/${file.filename}` : '';
       const user = await this.userRepository.findOne({
         where: { accountId: userId },
       });
@@ -137,8 +141,15 @@ export class UsersService {
     }
   }
 
-  async createUser(accoundId: number, createData: CreateUserDto) {
+  async createUser(
+    accoundId: number,
+    createData: CreateUserDto,
+    file: Express.Multer.File,
+  ) {
     try {
+      createData.avatarUrl = file
+        ? `/uploads/account_${accoundId}/${file.filename}`
+        : '';
       return await this.dataSource.transaction(
         async (transactionalEntityManager) => {
           const accountRepo = transactionalEntityManager.getRepository(Account);
