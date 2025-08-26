@@ -10,6 +10,8 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { UserModule } from './users/user.module';
 import { PostModule } from './posts/post.module';
 import { PaypalModule } from './paypal/paypal.module';
+import { AppealModule } from './appeal/appeal.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { PaypalModule } from './paypal/paypal.module';
     UserModule,
     PostModule,
     PaypalModule,
+    AppealModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
