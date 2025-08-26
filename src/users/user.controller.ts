@@ -35,7 +35,7 @@ export class UserController {
   @Get('profile')
   async getProfile(@Req() request: Request) {
     const accountId = request['user'].sub;
-    return this.userService.getProfile(parseInt(accountId));
+    return this.userService.getProfile(accountId);
   }
 
   @Put('update')

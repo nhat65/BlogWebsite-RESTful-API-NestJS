@@ -11,37 +11,46 @@ import { Post } from './post.entity';
 
 @Entity('comment')
 export class Comment {
-  @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
-  id: number;
+  @PrimaryGeneratedColumn('uuid', { name: 'id' })
+  id: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'text', name: 'content' })
   content: string;
 
-  @Column({ type: 'bigint', unsigned: true })
-  userId: number;
+  @Column({ type: 'uuid', name: 'user_id' })
+  userId: string;
 
-  @Column({ type: 'bigint', unsigned: true })
-  postId: number;
+  @Column({ type: 'uuid', name: 'post_id' })
+  postId: string;
 
-  @Column({ type: 'bigint', unsigned: true, nullable: true })
-  parentId: number | null;
+  @Column({ type: 'uuid', nullable: true, name: 'parent_id' })
+  parentId: string | null;
 
-  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({
+    type: 'datetime',
+    default: () => 'CURRENT_TIMESTAMP',
+    name: 'created_at',
+  })
   createdAt: Date;
 
-  @Column({ type: 'datetime', nullable: true, onUpdate: 'CURRENT_TIMESTAMP' })
+  @Column({
+    type: 'datetime',
+    nullable: true,
+    onUpdate: 'CURRENT_TIMESTAMP',
+    name: 'updated_at',
+  })
   updatedAt: Date | null;
 
   @ManyToOne(() => User, (user) => user.comments)
-  @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
+  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   user: User;
 
   @ManyToOne(() => Post, (post) => post.comments)
-  @JoinColumn({ name: 'postId', referencedColumnName: 'id' })
+  @JoinColumn({ name: 'post_id', referencedColumnName: 'id' })
   post: Post;
 
   @ManyToOne(() => Comment, (comment) => comment.children, { nullable: true })
-  @JoinColumn({ name: 'parentId', referencedColumnName: 'id' })
+  @JoinColumn({ name: 'parent_id', referencedColumnName: 'id' })
   parent: Comment | null;
 
   @OneToMany(() => Comment, (comment) => comment.parent)

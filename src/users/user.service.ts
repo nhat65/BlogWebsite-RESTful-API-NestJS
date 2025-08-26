@@ -63,7 +63,7 @@ export class UserService {
     }
   }
 
-  async getProfile(userId: number) {
+  async getProfile(userId: string) {
     try {
       const cachedProfile = await this.cacheManager.get<User>(`user_${userId}`);
       if (cachedProfile) {
@@ -106,7 +106,7 @@ export class UserService {
   }
 
   async updateProfile(
-    userId: number,
+    userId: string,
     updateData: UpdateUserDto,
     file: Express.Multer.File,
   ) {
@@ -142,7 +142,7 @@ export class UserService {
   }
 
   async createUser(
-    accoundId: number,
+    accoundId: string,
     createData: CreateUserDto,
     file: Express.Multer.File,
   ) {

@@ -1,12 +1,6 @@
 import { PostStatus } from 'src/constant/enum';
 import { PostDto } from './post.dto';
-import {
-  IsDate,
-  IsNumber,
-  IsOptional,
-  IsString,
-  MinDate,
-} from 'class-validator';
+import { IsDate, IsOptional, IsString, MinDate } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 export class CreatePostDto extends PostDto {
@@ -22,7 +16,7 @@ export class CreatePostDto extends PostDto {
   @IsOptional()
   publishAt: Date;
 
-  @IsNumber()
+  @IsString()
   @IsOptional()
-  userId: number;
+  userId: string;
 }

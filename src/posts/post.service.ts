@@ -147,7 +147,7 @@ export class PostService {
   }
 
   async create(
-    accountId: number,
+    accountId: string,
     createPostDto: CreatePostDto,
     file: Express.Multer.File,
   ) {
@@ -208,7 +208,7 @@ export class PostService {
   }
 
   async update(
-    accountId: number,
+    accountId: string,
     slug: string,
     updatePostDto: UpdatePostDto,
     file: Express.Multer.File,
@@ -242,15 +242,15 @@ export class PostService {
             existingSlugs.map((post) => post.slug),
           );
         }
-      }
-
-      const existingSlugs = await this.postRepository.find({
-        select: ['slug'],
-        where: { slug: Like(`${updatePostDto.slug}%`) },
-      });
-      if (existingSlugs.length) {
-        this.logger.error('Update post failed - Slug already exited');
-        throw new ConflictException('Slug already existed');
+      } else {
+        const existingSlugs = await this.postRepository.find({
+          select: ['slug'],
+          where: { slug: Like(`${updatePostDto.slug}%`) },
+        });
+        if (existingSlugs.length) {
+          this.logger.error('Update post failed - Slug already exited');
+          throw new ConflictException('Slug already existed');
+        }
       }
 
       const updatePost = { ...post, ...updatePostDto };
@@ -272,7 +272,7 @@ export class PostService {
     }
   }
 
-  async delete(accountId: number, postId: number) {
+  async delete(accountId: string, postId: string) {
     try {
       return await this.dataSource.transaction(
         async (transactionalEntityManager) => {
