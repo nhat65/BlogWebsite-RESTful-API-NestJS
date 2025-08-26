@@ -10,35 +10,44 @@ import { Post } from './post.entity';
 
 @Entity('report')
 export class Report {
-  @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
-  id: number;
+  @PrimaryGeneratedColumn('uuid', { name: 'id' })
+  id: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'text', name: 'content' })
   content: string;
 
-  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({
+    type: 'datetime',
+    default: () => 'CURRENT_TIMESTAMP',
+    name: 'reported_at',
+  })
   reportedAt: Date;
 
-  @Column({ type: 'varchar', length: 20, default: 'pending' })
+  @Column({ type: 'varchar', length: 20, default: 'pending', name: 'status' })
   status: 'pending' | 'resolved' | 'dismissed';
 
-  @Column({ type: 'bigint', unsigned: true })
-  userId: number;
+  @Column({ type: 'uuid', name: 'user_id' })
+  userId: string;
 
-  @Column({ type: 'bigint', unsigned: true })
-  postId: number;
+  @Column({ type: 'uuid', name: 'post_id' })
+  postId: string;
 
-  @Column({ type: 'datetime', nullable: true, onUpdate: 'CURRENT_TIMESTAMP' })
+  @Column({
+    type: 'datetime',
+    nullable: true,
+    onUpdate: 'CURRENT_TIMESTAMP',
+    name: 'updated_at',
+  })
   updatedAt: Date | null;
 
-  @Column({ type: 'int', nullable: true })
-  resolvedBy: number | null;
+  @Column({ type: 'uuid', nullable: true, name: 'resolved_by' })
+  resolvedBy: string | null;
 
   @ManyToOne(() => User, (user) => user.reports)
-  @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
+  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   user: User;
 
   @ManyToOne(() => Post, (post) => post.reports)
-  @JoinColumn({ name: 'postId', referencedColumnName: 'id' })
+  @JoinColumn({ name: 'post_id', referencedColumnName: 'id' })
   post: Post;
 }

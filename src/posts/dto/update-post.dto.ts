@@ -29,12 +29,9 @@ export class UpdatePostDto {
   @MinLength(10, { message: 'Content must be at least 10 characters' })
   content: string;
 
-  @IsNumber()
-  @Type(() => Number)
-  @IsInt()
-  @IsPositive()
+  @IsString()
   @IsNotEmpty({ message: 'Tag is required' })
-  tagId: number;
+  tagId: string;
 
   @IsOptional()
   @IsString()

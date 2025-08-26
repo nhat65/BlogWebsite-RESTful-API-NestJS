@@ -10,29 +10,38 @@ import { User } from './user.entity';
 
 @Entity('post_reaction')
 export class PostReaction {
-  @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
-  id: number;
+  @PrimaryGeneratedColumn('uuid', { name: 'id' })
+  id: string;
 
-  @Column({ type: 'enum', enum: ['like', 'dislike'] })
+  @Column({ type: 'enum', enum: ['like', 'dislike'], name: 'reaction' })
   reaction: 'like' | 'dislike';
 
-  @Column({ type: 'bigint', unsigned: true })
-  postId: number;
+  @Column({ type: 'uuid', name: 'post_id' })
+  postId: string;
 
-  @Column({ type: 'bigint', unsigned: true })
-  userId: number;
+  @Column({ type: 'uuid', name: 'user_id' })
+  userId: string;
 
-  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({
+    type: 'datetime',
+    default: () => 'CURRENT_TIMESTAMP',
+    name: 'created_at',
+  })
   createdAt: Date;
 
-  @Column({ type: 'datetime', nullable: true, onUpdate: 'CURRENT_TIMESTAMP' })
+  @Column({
+    type: 'datetime',
+    nullable: true,
+    onUpdate: 'CURRENT_TIMESTAMP',
+    name: 'updated_at',
+  })
   updatedAt: Date | null;
 
   @ManyToOne(() => Post, (post) => post.reactions)
-  @JoinColumn({ name: 'postId', referencedColumnName: 'id' })
+  @JoinColumn({ name: 'post_id', referencedColumnName: 'id' })
   post: Post;
 
   @ManyToOne(() => User, (user) => user.reactions)
-  @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
+  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   user: User;
 }

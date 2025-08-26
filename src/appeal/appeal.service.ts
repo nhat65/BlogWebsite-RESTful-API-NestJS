@@ -31,7 +31,7 @@ export class AppealService {
     private readonly mailService: MailService,
   ) {}
 
-  async createPostAppeal(accountId: number, createAppealDto: CreateAppealDto) {
+  async createPostAppeal(accountId: string, createAppealDto: CreateAppealDto) {
     try {
       const user = await this.userRepository.findOne({
         where: { accountId },
@@ -65,7 +65,7 @@ export class AppealService {
     }
   }
 
-  async getUserAppeal(accountId: number) {
+  async getUserAppeal(accountId: string) {
     try {
       const user = await this.userRepository.findOne({
         where: { accountId },
@@ -107,7 +107,7 @@ export class AppealService {
     }
   }
 
-  async rejectAppeal(rejectAppealDto: RejectAppealDto, accountId: number) {
+  async rejectAppeal(rejectAppealDto: RejectAppealDto, accountId: string) {
     try {
       const adminUser = await this.userRepository.findOne({
         where: { accountId },
@@ -172,7 +172,7 @@ export class AppealService {
       throw new BadRequestException('Reject appeal failed');
     }
   }
-  async resolveAppeal(resolveAppealDto: ResolveAppealDto, accountId: number) {
+  async resolveAppeal(resolveAppealDto: ResolveAppealDto, accountId: string) {
     try {
       const user = await this.userRepository.findOne({
         where: { accountId },

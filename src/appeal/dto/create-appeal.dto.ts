@@ -1,8 +1,8 @@
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { AppealDto } from './appeal.dto';
 
 export class CreateAppealDto extends AppealDto {
-  @IsNumber()
+  @IsString()
   @IsNotEmpty({ message: 'Post Id is requied' })
-  postId: number;
+  postId: string;
 }

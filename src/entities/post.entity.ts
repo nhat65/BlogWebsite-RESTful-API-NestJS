@@ -15,51 +15,64 @@ import { Report } from './report.entity';
 
 @Entity('post')
 export class Post {
-  @PrimaryGeneratedColumn({ type: 'bigint', unsigned: true })
-  id: number;
+  @PrimaryGeneratedColumn('uuid', { name: 'id' })
+  id: string;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255, name: 'title' })
   title: string;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255, name: 'slug' })
   slug: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'text', name: 'content' })
   content: string;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true, name: 'image_url' })
   imageUrl: string | null;
 
-  @Column({ type: 'enum', enum: ['posted', 'scheduled', 'hidden'] })
+  @Column({
+    type: 'enum',
+    enum: ['posted', 'scheduled', 'hidden'],
+    name: 'status',
+  })
   status: 'posted' | 'scheduled' | 'hidden';
 
-  @Column({ type: 'datetime', nullable: true })
+  @Column({ type: 'datetime', nullable: true, name: 'publish_at' })
   publishAt: Date | null;
 
-  @Column({ type: 'bigint', unsigned: true })
-  tagId: number;
+  @Column({ type: 'uuid', name: 'tag_id' })
+  tagId: string;
 
-  @Column({ type: 'bigint', unsigned: true })
-  userId: number;
+  @Column({ type: 'uuid', name: 'user_id' })
+  userId: string;
 
-  @Column({ type: 'datetime', nullable: true })
+  @Column({ type: 'datetime', nullable: true, name: 'published_at' })
   publishedAt: Date | null;
 
-  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({
+    type: 'datetime',
+    default: () => 'CURRENT_TIMESTAMP',
+    name: 'created_at',
+  })
   createdAt: Date;
 
-  @Column({ type: 'datetime', nullable: true, onUpdate: 'CURRENT_TIMESTAMP' })
+  @Column({
+    type: 'datetime',
+    nullable: true,
+    onUpdate: 'CURRENT_TIMESTAMP',
+    name: 'updated_at',
+  })
   updatedAt: Date | null;
 
-  @Column({ type: 'int', nullable: true })
-  updateBy: number | null;
+  @Column({ type: 'uuid', nullable: true, name: 'update_by' })
+  updateBy: string | null;
 
   @ManyToOne(() => Tag, (tag) => tag.posts)
-  @JoinColumn({ name: 'tagId', referencedColumnName: 'id' })
+  @JoinColumn({ name: 'tag_id', referencedColumnName: 'id' })
   tag: Tag;
 
   @ManyToOne(() => User, (user) => user.posts)
-  @JoinColumn({ name: 'userId', referencedColumnName: 'id' })
+  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
   user: User;
 
   @OneToMany(() => Appeal, (appeal) => appeal.post)
