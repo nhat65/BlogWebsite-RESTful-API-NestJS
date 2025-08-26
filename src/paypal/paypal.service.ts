@@ -18,9 +18,7 @@ export class PaypalService {
   ) {}
 
   async getAccessToken() {
-    const cachedPaypalToken = await this.cacheManager.get(
-      CACHE_PAYPAL_TOKEN,
-    );
+    const cachedPaypalToken = await this.cacheManager.get(CACHE_PAYPAL_TOKEN);
     if (cachedPaypalToken) return cachedPaypalToken;
 
     try {

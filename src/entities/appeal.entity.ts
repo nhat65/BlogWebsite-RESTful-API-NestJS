@@ -19,8 +19,8 @@ export class Appeal {
   @Column({ type: 'bigint', unsigned: true })
   userId: number;
 
-  @Column({ type: 'bigint', unsigned: true, nullable: true })
-  postId: number | null;
+  @Column({ type: 'bigint', unsigned: true })
+  postId: number;
 
   @Column({ type: 'varchar', length: 255 })
   reason: string;
