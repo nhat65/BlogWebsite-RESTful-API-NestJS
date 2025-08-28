@@ -202,4 +202,61 @@ export class CommentService {
       throw new BadRequestException('Update comment failed');
     }
   }
+
+  async deleteComment(accountId: string, id: string) {
+    try {
+      return await this.dataSource.transaction(
+        async (transactionalEntityManager) => {
+          const user = await transactionalEntityManager.findOne(User, {
+            where: { accountId },
+            select: ['id'],
+          });
+          if (!user) {
+            throw new NotFoundException('User not found');
+          }
+
+          const comment = await transactionalEntityManager.findOne(Comment, {
+            where: { id },
+            select: ['id', 'parentId'],
+          });
+          if (comment?.parentId) {
+            const result = await transactionalEntityManager.delete(Comment, {
+              id,
+              userId: user?.id,
+            });
+            if (!result.affected || result.affected === 0) {
+              throw new NotFoundException('Comment not found - unauthorized');
+            }
+            return {
+              status: true,
+              message: 'Delete comment successfully',
+            };
+          }
+
+          await transactionalEntityManager.delete(Comment, {
+            parentId: id,
+          });
+          const result = await transactionalEntityManager.delete(Comment, {
+            id,
+            userId: user?.id,
+          });
+          if (!result.affected || result.affected === 0) {
+            throw new NotFoundException('Comment not found - unauthorized');
+          }
+          return {
+            status: true,
+            message: 'Delete comment successfully',
+          };
+        },
+      );
+    } catch (error) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof BadRequestException
+      ) {
+        throw error;
+      }
+      throw new BadRequestException('Delete comment failed');
+    }
+  }
 }

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -45,5 +46,12 @@ export class CommentController {
   ) {
     const accountId = request['user'].sub;
     return this.commentService.updateComment(accountId, updateCommentDto);
+  }
+
+  @Delete('/:id')
+  @UseGuards(JwtAuthGuard)
+  deleteComment(@Req() request: Request, @Param('id') id: string){
+    const accountId = request['user'].sub;
+    return this.commentService.deleteComment(accountId, id);
   }
 }
