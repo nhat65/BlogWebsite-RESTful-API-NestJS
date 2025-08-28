@@ -74,4 +74,78 @@ export class CommentService {
       throw new BadRequestException('Create comment failed');
     }
   }
+
+  async getAll(getPostCommentDto: GetPostCommentDto) {
+    try {
+      const post = await this.postRepository.findOne({
+        where: { id: getPostCommentDto.postId },
+        select: ['id'],
+      });
+      if (!post) {
+        throw new NotFoundException('Post not found');
+      }
+
+      const comments = await this.commentRepository.find({
+        where: { postId: getPostCommentDto.postId },
+        relations: ['user'],
+        order: { createdAt: 'DESC' },
+        select: {
+          id: true,
+          content: true,
+          createdAt: true,
+          user: {
+            id: true,
+            fullName: true,
+            avatarUrl: true,
+          },
+        },
+      });
+      return {
+        status: true,
+        message: 'Get all comments successfully',
+        data: comments,
+      };
+    } catch (error) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof BadRequestException
+      ) {
+        throw error;
+      }
+      throw new BadRequestException('Get all comments failed');
+    }
+  }
+
+  async getReplyComments(parentId: string) {
+    try {
+      const result = await this.commentRepository.find({
+        where: { id: parentId },
+        relations: ['user'],
+        select: {
+          id: true,
+          content: true,
+          createdAt: true,
+          parentId: true,
+          user: {
+            id: true,
+            fullName: true,
+            avatarUrl: true,
+          },
+        },
+      });
+      return {
+        status: true,
+        message: 'Get reply comments successfully',
+        data: result,
+      };
+    } catch (error) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof BadRequestException
+      ) {
+        throw error;
+      }
+      throw new BadRequestException('Get reply comments failed');
+    }
+  }
 }

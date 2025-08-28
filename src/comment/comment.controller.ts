@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { CreateCommentDto } from './dto/create-comment.dto';
@@ -16,5 +24,15 @@ export class CommentController {
   ) {
     const accountId = request['user'].sub;
     return this.commentService.createComment(accountId, createCommentDto);
+  }
+
+  @Get('/')
+  getAll(@Body() getPostCommentDto: GetPostCommentDto) {
+    return this.commentService.getAll(getPostCommentDto);
+  }
+
+  @Get('/reply/:parentId')
+  getReplyComments(@Param('parentId') parentId: string) {
+    return this.commentService.getReplyComments(parentId);
   }
 }
