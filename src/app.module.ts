@@ -12,6 +12,7 @@ import { PostModule } from './posts/post.module';
 import { PaypalModule } from './paypal/paypal.module';
 import { AppealModule } from './appeal/appeal.module';
 import { MailModule } from './mail/mail.module';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { MailModule } from './mail/mail.module';
     PaypalModule,
     AppealModule,
     MailModule,
+    CommentModule,
   ],
   controllers: [AppController],
   providers: [AppService],
