@@ -12,6 +12,7 @@ import { CreateCommentDto } from './dto/create-comment.dto';
 import { User } from 'src/entities/user.entity';
 import { Post } from 'src/entities/post.entity';
 import { GetPostCommentDto } from './dto/get-post-comment.dto';
+import { UpdateCommentDto } from './dto/update-comment.dto';
 
 @Injectable()
 export class CommentService {
@@ -146,6 +147,59 @@ export class CommentService {
         throw error;
       }
       throw new BadRequestException('Get reply comments failed');
+    }
+  }
+
+  async updateComment(accountId: string, updateCommentDto: UpdateCommentDto) {
+    try {
+      const user = await this.userRepository.findOne({
+        where: { accountId },
+        select: ['id'],
+      });
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
+      const post = await this.postRepository.findOne({
+        where: { id: updateCommentDto.postId },
+        select: ['id'],
+      });
+      if (!post) {
+        throw new NotFoundException('Post not found');
+      }
+
+      if (updateCommentDto.parentId) {
+        const parentComment = await this.commentRepository.findOne({
+          where: { id: updateCommentDto.parentId },
+          select: ['id'],
+        });
+        if (!parentComment) {
+          throw new NotFoundException('Parent comment not found');
+        }
+      }
+
+      const comment = await this.commentRepository.findOne({
+        where: { id: updateCommentDto.id },
+      });
+      if (!comment) {
+        throw new NotFoundException('Comment not found');
+      }
+
+      const updatePayload = { ...comment, ...updateCommentDto };
+      const result = await this.commentRepository.save(updatePayload);
+      return {
+        status: true,
+        message: 'Update comment successfully',
+        data: result,
+      };
+    } catch (error) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof BadRequestException
+      ) {
+        throw error;
+      }
+      throw new BadRequestException('Update comment failed');
     }
   }
 }
